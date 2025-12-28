@@ -14,7 +14,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "https://aiexpense-tracker-f.vercel.app",
-        "https://aiexpense-tracker-b.vercel.app",
+        "https://aiexpense-tracker-b.onrender.com",
         "localhost",
         "localhost:3000",
         "localhost:5173"
