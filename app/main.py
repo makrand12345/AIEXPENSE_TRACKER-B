@@ -11,11 +11,15 @@ app = FastAPI(title="AI Expense Tracker API")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # ✅ SAFE FOR NOW (lock later)
+    allow_origins=[
+        "http://https://aiexpense-tracker-f.vercel.app/",
+        "https://https://aiexpense-tracker-b.vercel.app/"
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
 
 app.include_router(auth_router, prefix="/auth", tags=["Auth"])
 app.include_router(profile_router, prefix="/profile", tags=["Profile"])
