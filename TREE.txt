@@ -1,0 +1,41 @@
+Backend Folder Structure
+========================
+
+backend/
+├── .env
+├── requirements.txt
+└── app/
+    ├── __init__.py
+    ├── main.py
+    ├── config/
+    │   ├── __pycache__/
+    │   └── database.py
+    ├── core/
+    │   ├── __pycache__/
+    │   ├── config.py
+    │   ├── deps.py
+    │   ├── jwt.py
+    │   └── security.py
+    ├── db/
+    │   ├── __pycache__/
+    │   └── mongo.py
+    ├── models/
+    │   ├── __pycache__/
+    │   ├── expense_model.py
+    │   └── user_model.py
+    ├── routes/
+    │   ├── __pycache__/
+    │   ├── __init__.py
+    │   ├── analytics.py
+    │   ├── auth_routes.py
+    │   ├── expenses.py
+    │   ├── finance.py
+    │   └── profile.py
+    ├── schemas/
+    │   ├── __pycache__/
+    │   ├── expense_schema.py
+    │   ├── finance_schema.py
+    │   └── user_schema.py
+    └── services/
+        ├── __pycache__/
+        └── auth_service.py
