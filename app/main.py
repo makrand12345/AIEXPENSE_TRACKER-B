@@ -13,7 +13,10 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "https://aiexpense-tracker-f.vercel.app",
-        "https://aiexpense-tracker-b.vercel.app"
+        "https://aiexpense-tracker-b.vercel.app",
+        "localhost",
+        "localhost:3000",
+        "localhost:5173"
     ],
     allow_credentials=True,
     allow_methods=["*"],
@@ -30,3 +33,8 @@ app.include_router(finance_router, prefix="/finance", tags=["Finance"])
 @app.get("/")
 def root():
     return {"message": "API running"}
+
+@app.get("/health")
+def health_check():
+    """Health check endpoint - no authentication required"""
+    return {"status": "healthy"}
