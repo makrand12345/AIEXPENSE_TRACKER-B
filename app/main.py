@@ -12,8 +12,8 @@ app = FastAPI(title="AI Expense Tracker API")
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "http://https://aiexpense-tracker-f.vercel.app/",
-        "https://https://aiexpense-tracker-b.vercel.app/"
+        "https://aiexpense-tracker-f.vercel.app",
+        "https://aiexpense-tracker-b.vercel.app"
     ],
     allow_credentials=True,
     allow_methods=["*"],
