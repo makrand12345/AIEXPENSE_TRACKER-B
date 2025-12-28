@@ -1,12 +1,15 @@
 from fastapi import APIRouter, Depends
 from datetime import datetime
 from app.core.jwt import get_current_user
-from app.config.database import expense_collection, user_collection
+from app.config.database import get_expense_collection, get_user_collection
 
 router = APIRouter()
 
 @router.get("/overview")
 def analytics_overview(current_user: dict = Depends(get_current_user)):
+    user_collection = get_user_collection()
+    expense_collection = get_expense_collection()
+    
     user = user_collection.find_one({"_id": current_user["id"]})
     finance = user.get("finance_profile")
 

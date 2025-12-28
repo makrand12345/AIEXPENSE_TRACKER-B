@@ -4,41 +4,63 @@ from pymongo.errors import ServerSelectionTimeoutError
 
 MONGO_URI = os.getenv("MONGO_URI")
 
-# Initialize as None; will be connected on first request if env var is set
-client = None
-db = None
-user_collection = None
-expense_collection = None
+# Lazy initialization - don't connect until first use
+_client = None
+_db = None
+_user_collection = None
+_expense_collection = None
+_initialized = False
 
-def _init_db():
-    """Initialize database connection on first use"""
-    global client, db, user_collection, expense_collection
+def get_user_collection():
+    """Get user collection, initializing DB if needed"""
+    global _client, _db, _user_collection, _initialized
     
-    if client is not None:
-        return  # Already initialized
+    if _initialized:
+        return _user_collection
     
     if not MONGO_URI:
         raise RuntimeError(
-            "MONGO_URI environment variable not set. "
-            "Set it in Vercel project settings or .env file"
+            "MONGO_URI not set. Configure it in Vercel project settings."
         )
     
     try:
-        client = MongoClient(MONGO_URI, serverSelectionTimeoutMS=5000)
-        client.admin.command('ping')
-        db = client["ai_expense_tracker"]
-        user_collection = db["users"]
-        expense_collection = db["expenses"]
+        _client = MongoClient(MONGO_URI, serverSelectionTimeoutMS=5000)
+        _client.admin.command('ping')
+        _db = _client["ai_expense_tracker"]
+        _user_collection = _db["users"]
+        _initialized = True
+        return _user_collection
     except ServerSelectionTimeoutError as e:
         raise RuntimeError(
-            f"Could not connect to MongoDB at {MONGO_URI}. "
-            f"Check your connection string and MongoDB Atlas network access rules."
+            f"Cannot connect to MongoDB. Check MONGO_URI and MongoDB Atlas network access."
         ) from e
 
-# Call on import to validate early, but don't fail if env var not set yet
-try:
-    _init_db()
-except RuntimeError:
-    # Allow app to start; will fail with clear error on first API call
-    pass
+def get_expense_collection():
+    """Get expense collection, initializing DB if needed"""
+    global _client, _db, _expense_collection, _initialized
+    
+    if _initialized:
+        return _expense_collection
+    
+    if not MONGO_URI:
+        raise RuntimeError(
+            "MONGO_URI not set. Configure it in Vercel project settings."
+        )
+    
+    try:
+        _client = MongoClient(MONGO_URI, serverSelectionTimeoutMS=5000)
+        _client.admin.command('ping')
+        _db = _client["ai_expense_tracker"]
+        _expense_collection = _db["expenses"]
+        _initialized = True
+        return _expense_collection
+    except ServerSelectionTimeoutError as e:
+        raise RuntimeError(
+            f"Cannot connect to MongoDB. Check MONGO_URI and MongoDB Atlas network access."
+        ) from e
+
+# Legacy exports for backward compatibility - these are None until first use
+user_collection = None
+expense_collection = None
+
 

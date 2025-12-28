@@ -1,7 +1,9 @@
-from app.config.database import user_collection
+from app.config.database import get_user_collection
 from app.core.security import hash_password, verify_password
 
 def create_user(name, email, password, profession):
+    user_collection = get_user_collection()
+    
     if user_collection.find_one({"email": email}):
         return None
 
@@ -16,6 +18,8 @@ def create_user(name, email, password, profession):
     return str(result.inserted_id)
 
 def authenticate_user(email, password):
+    user_collection = get_user_collection()
+    
     user = user_collection.find_one({"email": email})
     if not user:
         return None

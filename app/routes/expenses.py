@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends
 from bson import ObjectId
 from datetime import datetime
 
-from app.config.database import expense_collection
+from app.config.database import get_expense_collection, get_user_collection
 from app.schemas.expense_schema import ExpenseCreate
 from app.models.expense_model import expense_helper
 from app.core.jwt import get_current_user
@@ -12,6 +12,7 @@ router = APIRouter()
 # 📥 Get expenses (USER-SPECIFIC)
 @router.get("/")
 def get_expenses(current_user: dict = Depends(get_current_user)):
+    expense_collection = get_expense_collection()
     expenses = []
 
     cursor = expense_collection.find(
@@ -30,6 +31,7 @@ def add_expense(
     expense: ExpenseCreate,
     current_user: dict = Depends(get_current_user)
 ):
+    expense_collection = get_expense_collection()
     expense_data = {
         "title": expense.title,
         "amount": expense.amount,
@@ -53,6 +55,7 @@ def delete_expense(
     expense_id: str,
     current_user: dict = Depends(get_current_user)
 ):
+    expense_collection = get_expense_collection()
     expense_collection.delete_one({
         "_id": ObjectId(expense_id),
         "user_id": current_user["id"],
