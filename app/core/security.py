@@ -10,10 +10,19 @@ def _truncate_to_72_bytes(password: str) -> bytes:
     """
     return password.encode("utf-8")[:72]
 
+def _truncate_to_72_str(password: str) -> str:
+    """Return a UTF-8 string whose encoded form is at most 72 bytes.
+
+    We encode then trim bytes and decode with 'ignore' to avoid
+    partial multi-byte characters; this guarantees that when
+    passlib re-encodes the string it will be <=72 bytes.
+    """
+    return _truncate_to_72_bytes(password).decode("utf-8", "ignore")
+
 def hash_password(password: str) -> str:
-    pw_bytes = _truncate_to_72_bytes(password)
-    return pwd_context.hash(pw_bytes)
+    pw_safe = _truncate_to_72_str(password)
+    return pwd_context.hash(pw_safe)
 
 def verify_password(password: str, hashed_password: str) -> bool:
-    pw_bytes = _truncate_to_72_bytes(password)
-    return pwd_context.verify(pw_bytes, hashed_password)
+    pw_safe = _truncate_to_72_str(password)
+    return pwd_context.verify(pw_safe, hashed_password)
