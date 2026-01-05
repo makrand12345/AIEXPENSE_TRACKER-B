@@ -15,9 +15,8 @@ app.add_middleware(
     allow_origins=[
         "https://aiexpense-tracker-f.vercel.app",
         "https://aiexpense-tracker-b.onrender.com",
-        "localhost",
-        "localhost:3000",
-        "localhost:5173"
+        "http://localhost:3000",
+        "http://localhost:5173"
     ],
     allow_credentials=True,
     allow_methods=["*"],
