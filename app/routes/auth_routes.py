@@ -7,6 +7,13 @@ router = APIRouter()
 
 @router.post("/signup")
 def signup(data: UserCreate):
+    # validate password byte length for bcrypt (max 72 bytes)
+    if len(data.password.encode("utf-8")) > 72:
+        raise HTTPException(
+            status_code=400,
+            detail="Password too long: maximum 72 UTF-8 bytes allowed"
+        )
+
     user_id = create_user(
         data.name,
         data.email,
