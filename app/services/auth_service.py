@@ -24,6 +24,7 @@ def authenticate_user(email, password):
     if not user:
         return None
 
+    print(f"Authenticating user: {email}, Hashed password in DB: {user['password']}")
     if not verify_password(password, user["password"]):
         return None
 

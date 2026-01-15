@@ -10,6 +10,9 @@ def _truncate_to_72_bytes(password: str) -> bytes:
     """
     return password.encode("utf-8")[:72]
 
+def get_password_hash(password: str) -> str:
+    return pwd_context.hash(password)
+
 def _truncate_to_72_str(password: str) -> str:
     """Return a UTF-8 string whose encoded form is at most 72 bytes.
 
@@ -20,8 +23,11 @@ def _truncate_to_72_str(password: str) -> str:
     return _truncate_to_72_bytes(password).decode("utf-8", "ignore")
 
 def hash_password(password: str) -> str:
-    pw_safe = _truncate_to_72_str(password)
-    return pwd_context.hash(pw_safe)
+    try:
+        pw_safe = _truncate_to_72_str(password)
+        return pwd_context.hash(pw_safe)
+    except Exception as e:
+        raise ValueError("Error hashing password") from e
 
 def verify_password(password: str, hashed_password: str) -> bool:
     pw_safe = _truncate_to_72_str(password)

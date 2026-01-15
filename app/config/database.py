@@ -1,8 +1,12 @@
 import os
 from pymongo import MongoClient
 from pymongo.errors import ServerSelectionTimeoutError
+from app.core.config import settings
 
-MONGO_URI = os.getenv("MONGO_URI")
+MONGO_URI = settings.MONGO_URI
+print(f"Initializing database configuration...{settings.MONGO_URI}")
+
+print(f"Database config - MONGO_URI set: {MONGO_URI is not None} MONGO_URI: {MONGO_URI}")
 
 # Lazy initialization - don't connect until first use
 _client = None

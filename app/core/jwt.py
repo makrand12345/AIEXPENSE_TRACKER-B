@@ -4,8 +4,9 @@ from jose import jwt, JWTError
 from fastapi import HTTPException, Header
 from bson import ObjectId
 from app.config.database import get_user_collection
+from app.core.config import settings
 
-SECRET_KEY = os.getenv("SECRET_KEY")
+SECRET_KEY = settings.SECRET_KEY
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60
 
