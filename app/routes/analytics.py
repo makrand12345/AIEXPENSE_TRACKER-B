@@ -1,3 +1,10 @@
+from fastapi import APIRouter, Depends
+from app.core.jwt import get_current_user
+from app.config.database import get_user_collection, get_expense_collection
+
+router = APIRouter()  # ✅ THIS LINE WAS MISSING
+
+
 @router.get("/overview")
 def analytics_overview(current_user: dict = Depends(get_current_user)):
     user_collection = get_user_collection()
@@ -16,9 +23,9 @@ def analytics_overview(current_user: dict = Depends(get_current_user)):
 
     finance = user["finance_profile"]
 
-    expenses = list(expense_collection.find({
-        "user_id": current_user["id"]
-    }))
+    expenses = list(
+        expense_collection.find({"user_id": current_user["id"]})
+    )
 
     total_spent = sum(e.get("amount", 0) for e in expenses)
 
