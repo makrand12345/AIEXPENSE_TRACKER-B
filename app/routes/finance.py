@@ -39,3 +39,16 @@ def save_finance_profile(
     )
 
     return {"message": "Finance profile saved"}
+
+@router.get("/exists")
+def finance_profile_exists(current_user: dict = Depends(get_current_user)):
+    user_collection = get_user_collection()
+
+    user = user_collection.find_one(
+        {"_id": ObjectId(current_user["id"])},
+        {"finance_profile": 1}
+    )
+
+    return {
+        "exists": bool(user and user.get("finance_profile"))
+    }
