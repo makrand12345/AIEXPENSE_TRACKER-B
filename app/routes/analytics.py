@@ -1,26 +1,26 @@
-from fastapi import APIRouter, Depends
-from datetime import datetime
-from app.core.jwt import get_current_user
-from app.config.database import get_expense_collection, get_user_collection
-
-router = APIRouter()
-
 @router.get("/overview")
 def analytics_overview(current_user: dict = Depends(get_current_user)):
     user_collection = get_user_collection()
     expense_collection = get_expense_collection()
-    
-    user = user_collection.find_one({"_id": current_user["id"]})
-    finance = user.get("finance_profile")
 
-    if not finance:
-        return {"warning": "Finance profile not completed"}
+    user = user_collection.find_one({"_id": current_user["id"]})
+
+    if not user or "finance_profile" not in user:
+        return {
+            "total_spent": 0,
+            "disposable_income": 0,
+            "investment_ratio": 0,
+            "risk_level": None,
+            "insight": "Complete your finance profile to see insights"
+        }
+
+    finance = user["finance_profile"]
 
     expenses = list(expense_collection.find({
         "user_id": current_user["id"]
     }))
 
-    total_spent = sum(e["amount"] for e in expenses)
+    total_spent = sum(e.get("amount", 0) for e in expenses)
 
     disposable_income = (
         finance["monthly_income"]
